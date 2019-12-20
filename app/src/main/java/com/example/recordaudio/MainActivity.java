@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         String timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(currentTime);
         Log.d(LOG_TAG, timestamp);
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(timestamp + "_audio.csv")));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audio.csv"))));
             for (int i=0; i<audioBuffer.length; i++) {
                 pw.println(audioBuffer[i] + ", ");
             }
