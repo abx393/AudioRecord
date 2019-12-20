@@ -25,6 +25,9 @@ import android.media.AudioTrack;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -54,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+
+    private static EditText nameText;
+    private static Spinner exerciseSpinner;
+    private static EditText repsText;
+    private static Spinner locationSpinner;
+    private static Spinner orientationSpinner;
+    private static EditText locationText;
+    private static EditText commentsText;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -159,20 +170,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveRecording()  {
+        //Retrieve label and metadata from info user recorded in textboxes and drop down menus
+        String name = nameText.getText().toString();
+        String exercise = exerciseSpinner.getSelectedItem().toString();
+        String reps = repsText.getText().toString();
+        String phoneLocation = locationSpinner.getSelectedItem().toString();
+        String phoneOrientation = orientationSpinner.getSelectedItem().toString();
+        String location = locationText.getText().toString();
+        String comments = commentsText.getText().toString();
 
+        JSONObject data = new JSONObject();
+        try {
+            data.put("name", name);
+            data.put("exercise", exercise);
+            data.put("repetitions", reps);
+            data.put("phoneLocation", phoneLocation);
+            data.put("phoneModel", "Google Pixel");
+            data.put("Location", location);
+            data.put("Comments", comments);
+        } catch (JSONException e){
+            Log.e(LOG_TAG, "saveRecording(): " + e);
+        }
         //Generate output files named {timestamp}_audio.csv
         Date currentTime = new Date();
         String timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(currentTime);
         Log.d(LOG_TAG, timestamp);
         try {
+
+            //writing audio samples to output file
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audio.csv"))));
             for (int i=0; i<audioBuffer.length; i++) {
                 pw.println(audioBuffer[i] + ", ");
             }
             pw.close();
+
+            //writing label and metadata to notes file
+            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audioNotes.json"))));
+            pw2.write(data.toString());
+            Log.d(LOG_TAG, data.toString());
+            pw2.close();
+
         } catch (IOException e){
             Log.e(LOG_TAG, "saveRecording(): " + e);
         }
+
+
     }
 
     private Complex[] dft(short[] samples, int freqLow, int freqHigh) {
@@ -246,8 +288,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        nameText = findViewById(R.id.name);
+        repsText = findViewById(R.id.reps);
+        locationText = findViewById(R.id.location);
+        commentsText = findViewById(R.id.comments);
+
         //Add the options to the "Exercise" drop down menu
-        Spinner exerciseSpinner = (Spinner) findViewById(R.id.exerciseSpinner);
+        exerciseSpinner = (Spinner) findViewById(R.id.exerciseSpinner);
         ArrayList<String> exercises = new ArrayList<String>();
         exercises.add("Arm lift");
         exercises.add("Bicep curl");
@@ -264,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         exerciseSpinner.setAdapter(dataAdapter);
 
         //Add options to the "Phone Location" drop down menu
-        Spinner locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
+        locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
         ArrayList<String> locations = new ArrayList<String>();
         locations.add("Table");
         locations.add("Floor");
@@ -274,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         locationSpinner.setAdapter(dataAdapter2);
 
         //Add options to the "Phone Orientation" drop down menu
-        Spinner orientationSpinner = (Spinner) findViewById(R.id.orientationSpinner);
+        orientationSpinner = (Spinner) findViewById(R.id.orientationSpinner);
         ArrayList<String> orientations = new ArrayList<String>();
         orientations.add("Flat");
         orientations.add("Upright");
@@ -282,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orientations);
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
-
     }
 }
 
