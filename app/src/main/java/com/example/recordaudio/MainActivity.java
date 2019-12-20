@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /*Plays constant frequency tone*/
     private void playTone() {
+        samples = ShortBuffer.allocate(numSamples);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void startRecording() {
+        audioBuffer = new short[bufferSize / 2];
         mShouldContinue = true;
         playTone(); //starts audio playing thread
         new Thread(new Runnable() {
