@@ -66,17 +66,16 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionToRecordAccepted ) finish();
 
     }
-
+    /*Plays constant frequency tone*/
     private void playTone() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                /*Generate a sine wave*/
                 for (int i = 0; i < numSamples; i++) {
                     double tmp = Math.sin(2 * Math.PI * i * freq / sampleRate); // Sine wave
                     short sample = (short) (tmp * Short.MAX_VALUE);
-                    //sample = 0; //********************************************************************************
-                    samples.put(sample);  // Higher amplitude increases volume
+                    samples.put(sample);
                 }
                 int bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
                 AudioTrack audioTrack = new AudioTrack(
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void startRecording() {
         mShouldContinue = true;
-        playTone();
+        playTone(); //starts audio playing thread
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -158,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveRecording()  {
+
+        //Generate output files named {timestamp}_audio.csv
         Date currentTime = new Date();
         String timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(currentTime);
         Log.d(LOG_TAG, timestamp);
@@ -218,10 +219,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-        EditText nameText = (EditText) findViewById(R.id.name);
+
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button stopButton = (Button) findViewById(R.id.stopButton);
         Button saveButton = (Button) findViewById(R.id.saveButton);
+
+        //Setting callback methods for button click events
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
@@ -241,8 +244,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Add the options to the "Exercise" drop down menu
         Spinner exerciseSpinner = (Spinner) findViewById(R.id.exerciseSpinner);
-
         ArrayList<String> exercises = new ArrayList<String>();
         exercises.add("Arm lift");
         exercises.add("Bicep curl");
@@ -258,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         exerciseSpinner.setAdapter(dataAdapter);
 
+        //Add options to the "Phone Location" drop down menu
         Spinner locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
         ArrayList<String> locations = new ArrayList<String>();
         locations.add("Table");
@@ -267,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(dataAdapter2);
 
+        //Add options to the "Phone Orientation" drop down menu
         Spinner orientationSpinner = (Spinner) findViewById(R.id.orientationSpinner);
         ArrayList<String> orientations = new ArrayList<String>();
         orientations.add("Flat");
@@ -278,6 +283,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+
+/* Complex number class*/
 class Complex {
     public final double re;
     public final double im;
