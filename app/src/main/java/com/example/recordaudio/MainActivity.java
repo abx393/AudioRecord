@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.AudioRecord;
+import android.os.Environment;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
@@ -32,6 +33,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.ShortBuffer;
+import java.nio.ByteBuffer;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -40,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private static final int freq = 10000;
+    private static final int freq = 20000;
     private static final int sampleRate = 44100;
-    private static final int numSamples = sampleRate * 10;
+    private static final int numSamples = sampleRate * 300;
     private static String fileName = null;
     private static int bufferSize = AudioRecord.getMinBufferSize(sampleRate,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT);
-    private static short[] audioBuffer = new short[bufferSize / 2];
+    private static byte[] audioBuffer = new byte[numSamples *2];
 
     private AudioRecord recorder = null;
     private MediaPlayer   player = null;
@@ -75,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (!permissionToRecordAccepted ) finish();
-
     }
     /*Plays constant frequency tone*/
     private void playTone() {
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void startRecording() {
-        audioBuffer = new short[bufferSize / 2];
+        audioBuffer = new byte[numSamples*2];
         mShouldContinue = true;
         playTone(); //starts audio playing thread
         new Thread(new Runnable() {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
 
-                AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.DEFAULT,
+                AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED,
                         sampleRate,
                         AudioFormat.CHANNEL_IN_MONO,
                         AudioFormat.ENCODING_PCM_16BIT,
@@ -150,12 +151,17 @@ public class MainActivity extends AppCompatActivity {
                 record.startRecording();
 
                 Log.v(LOG_TAG, "Start recording");
-                long shortsRead = 0;
-                while (mShouldContinue) {
-                    int numberOfShort = record.read(audioBuffer, 0, audioBuffer.length);
-                    shortsRead += numberOfShort;
+                int bytesRead = 0;
 
+                while (mShouldContinue) {
+                    //Log.d(LOG_TAG, "bytes read: " + bytesRead);
+                    int numberOfBytes = record.read(audioBuffer, bytesRead, bufferSize);
+                    //if (numberOfBytes>0) Log.d(LOG_TAG, "num of bytes: " + numberOfBytes + ", " + bytesRead + ", " + bufferSize);
+                    //else Log.d(LOG_TAG, "Error code: " + numberOfBytes);
+                    //else Log.d(LOG_TAG, "" +numberOfBytes);
+                    bytesRead += numberOfBytes;
                 }
+                //Log.d(LOG_TAG, "Buffer size: " + bufferSize);
                 //String s = Arrays.toString(audioBuffer);
                 //double[][] spec = computeSpectrogram(audioBuffer, freq-100, freq+100, 20000, 17000);
                 //Log.d("SAMPLES ", s);
@@ -198,12 +204,14 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             //writing audio samples to output file
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audio.csv"))));
-            for (int i=0; i<audioBuffer.length; i++) {
-                pw.println(audioBuffer[i] + ", ");
-            }
-            pw.close();
-
+            String path = "/storage/emulated/0/ExerciseRx/Doppler/";
+            PrintStream ps = new PrintStream(new File(path + timestamp + "_audio.csv"));
+            ps.write(audioBuffer, 0, audioBuffer.length);
+            /*for (int i=0; i<audioBuffer.length; i++) {
+                pw.print(audioBuffer[i]);
+            }*/
+            ps.flush();
+            ps.close();
             //writing label and metadata to notes file
             PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audioNotes.json"))));
             pw2.write(data.toString());
