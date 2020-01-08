@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
             ps.flush();
             ps.close();
             //writing label and metadata to notes file
-            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(getFilesDir()+ timestamp + "_audioNotes.json"))));
+            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(path + timestamp + "_audioNotes.json"))));
             pw2.write(data.toString());
             Log.d(LOG_TAG, data.toString());
             pw2.close();
@@ -221,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e){
             Log.e(LOG_TAG, "saveRecording(): " + e);
         }
-
 
     }
 
