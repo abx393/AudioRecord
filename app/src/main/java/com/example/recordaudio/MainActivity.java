@@ -311,7 +311,10 @@ public class MainActivity extends AppCompatActivity {
         exercises.add("Seated Opposite Knee-to-elbow");
         exercises.add("Standing Marches (Knee Lifts)");
         exercises.add("Seated Arm Punches");
-        exercises.add("Non-exercise");
+        exercises.add("Standing Crossover Toe Touches");
+        exercises.add("Talking");
+        exercises.add("Eating/Drinking");
+        exercises.add("No Movement");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, exercises);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
