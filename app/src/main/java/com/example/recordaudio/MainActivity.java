@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             data.put("exercise", exercise);
             data.put("repetitions", reps);
             data.put("phoneLocation", phoneLocation);
+            data.put("phoneOrientation", phoneOrientation);
             data.put("phoneModel", "Google Pixel");
             data.put("Location", location);
             data.put("Comments", comments);
