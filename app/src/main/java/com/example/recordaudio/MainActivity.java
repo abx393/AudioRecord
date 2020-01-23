@@ -2,6 +2,8 @@ package com.example.recordaudio;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.Manifest;
@@ -11,6 +13,7 @@ import android.media.MediaRecorder;
 import android.media.AudioRecord;
 import android.os.Environment;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.os.Bundle;
@@ -38,7 +41,20 @@ import java.nio.ByteBuffer;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import static com.example.recordaudio.MainActivity.SaveState.NONE_OR_SAVED;
+import static com.example.recordaudio.MainActivity.SaveState.RECORDING;
+import static com.example.recordaudio.MainActivity.SaveState.SAVEABLE;
+
 public class MainActivity extends AppCompatActivity {
+
+    // possible situations:
+    // no audio data, no metadata
+    // yes audio data, no metadata
+    // no audio data, yes metadata
+    // yes audio data, yes metadata
+    enum SaveState {
+        RECORDING, SAVEABLE, NONE_OR_SAVED
+    }
 
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -67,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
     private static Spinner orientationSpinner;
     private static EditText locationText;
     private static EditText commentsText;
+    private RelativeLayout layoutRoot;
+
+    private SaveState currentSaveState = NONE_OR_SAVED;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -100,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                         AudioTrack.MODE_STREAM);
                 //audioTrack.write(buffer, 0, buffer.length);
                 audioTrack.play();
+
+                setCurrentSaveState(RECORDING);
 
                 Log.v(LOG_TAG, "Audio streaming started");
                 short[] buffer = new short[bufferSize];
@@ -272,6 +293,8 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
+        layoutRoot = findViewById(R.id.layout_root);
+
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button stopButton = (Button) findViewById(R.id.stopButton);
         Button saveButton = (Button) findViewById(R.id.saveButton);
@@ -287,12 +310,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 stopRecording();
+                setCurrentSaveState(SAVEABLE);
             }
         });
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveRecording();
+                setCurrentSaveState(NONE_OR_SAVED);
             }
         });
 
@@ -340,6 +365,28 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orientations);
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
+    }
+
+    private Runnable updateScreen = new Runnable() {
+        @Override
+        public void run() {
+            switch (currentSaveState) {
+                case RECORDING:
+                    layoutRoot.setBackgroundColor(Color.RED);
+                    break;
+                case SAVEABLE:
+                    layoutRoot.setBackgroundColor(Color.GREEN);
+                    break;
+                case NONE_OR_SAVED:
+                    layoutRoot.setBackgroundColor(Color.WHITE);
+                    break;
+            }
+        }
+    };
+
+    private void setCurrentSaveState(SaveState state) {
+        currentSaveState = state;
+        runOnUiThread(updateScreen);
     }
 }
 
