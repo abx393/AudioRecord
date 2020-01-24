@@ -83,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
     private static Spinner orientationSpinner;
     private static EditText locationText;
     private static EditText commentsText;
+
     private RelativeLayout layoutRoot;
+    private Button recordButton;
+    private Button stopButton;
+    private Button saveButton;
 
     private SaveState currentSaveState = NONE_OR_SAVED;
     private TonePlayer tonePlayer;
@@ -246,9 +250,9 @@ public class MainActivity extends AppCompatActivity {
 
         layoutRoot = findViewById(R.id.layout_root);
 
-        Button recordButton = (Button) findViewById(R.id.recordButton);
-        Button stopButton = (Button) findViewById(R.id.stopButton);
-        Button saveButton = (Button) findViewById(R.id.saveButton);
+        recordButton = (Button) findViewById(R.id.recordButton);
+        stopButton = (Button) findViewById(R.id.stopButton);
+        saveButton = (Button) findViewById(R.id.saveButton);
 
         //Setting callback methods for button click events
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -318,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
         orientationSpinner.setAdapter(dataAdapter3);
 
         tonePlayer = new TonePlayer();
+        setCurrentSaveState(NONE_OR_SAVED);
     }
 
     private Runnable updateScreen = new Runnable() {
@@ -326,12 +331,21 @@ public class MainActivity extends AppCompatActivity {
             switch (currentSaveState) {
                 case RECORDING:
                     layoutRoot.setBackgroundColor(Color.RED);
+                    recordButton.setEnabled(false);
+                    stopButton.setEnabled(true);
+                    saveButton.setEnabled(false);
                     break;
                 case SAVEABLE:
                     layoutRoot.setBackgroundColor(Color.GREEN);
+                    recordButton.setEnabled(true);
+                    stopButton.setEnabled(false);
+                    saveButton.setEnabled(true);
                     break;
                 case NONE_OR_SAVED:
                     layoutRoot.setBackgroundColor(Color.WHITE);
+                    recordButton.setEnabled(true);
+                    stopButton.setEnabled(false);
+                    saveButton.setEnabled(false);
                     break;
             }
         }
