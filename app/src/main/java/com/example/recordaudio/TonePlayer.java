@@ -21,26 +21,46 @@ public class TonePlayer {
     private static ShortBuffer samples = ShortBuffer.allocate(numSamples);
     private static boolean mShouldContinue = false;
 
-    public void start() {
-        mShouldContinue = true;
-        samples = ShortBuffer.allocate(numSamples);
+    private int bufferSize;
+
+    private AudioTrack audioTrack;
+
+    public TonePlayer() {
+        generateSineWave();
+
+        // audio playing interface
+        bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+        audioTrack = new AudioTrack(
+                AudioManager.STREAM_MUSIC,
+                sampleRate,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize,
+                AudioTrack.MODE_STREAM);
+    }
+
+    public void generateSineWave() {
+        // populate sine wave in a background thread
         new Thread(new Runnable() {
             @Override
             public void run() {
                 /*Generate a sine wave*/
+                samples = ShortBuffer.allocate(numSamples);
                 for (int i = 0; i < numSamples; i++) {
                     double tmp = Math.sin(2 * Math.PI * i * freq / sampleRate); // Sine wave
                     short sample = (short) (tmp * Short.MAX_VALUE);
                     samples.put(sample);
                 }
-                int bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-                AudioTrack audioTrack = new AudioTrack(
-                        AudioManager.STREAM_MUSIC,
-                        sampleRate,
-                        AudioFormat.CHANNEL_OUT_MONO,
-                        AudioFormat.ENCODING_PCM_16BIT,
-                        bufferSize,
-                        AudioTrack.MODE_STREAM);
+            }
+        }).start();
+    }
+
+    public void start() {
+        Log.v(LOG_TAG, "TONE PLAYER starting...");
+        mShouldContinue = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 //audioTrack.write(buffer, 0, buffer.length);
                 audioTrack.play();
 
@@ -69,7 +89,9 @@ public class TonePlayer {
                     audioTrack.write(buffer, 0, samplesToWrite);
                 }
                 if (!mShouldContinue) {
-                    audioTrack.release();
+                    // https://developer.android.com/reference/android/media/AudioTrack#stop()
+                    audioTrack.pause();
+                    audioTrack.flush();
                 }
                 Log.v(LOG_TAG, "Audio streaming finished. Samples written: " + totalWritten);
             }

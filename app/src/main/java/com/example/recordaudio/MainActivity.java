@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout layoutRoot;
 
     private SaveState currentSaveState = NONE_OR_SAVED;
-    private TonePlayer tonePlayer = new TonePlayer();
+    private TonePlayer tonePlayer;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         audioBuffer = new byte[numSamples*2];
         mShouldContinue = true;
         tonePlayer.start(); //starts audio playing thread
+        setCurrentSaveState(RECORDING);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -315,6 +316,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orientations);
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
+
+        tonePlayer = new TonePlayer();
     }
 
     private Runnable updateScreen = new Runnable() {
