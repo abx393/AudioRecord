@@ -55,12 +55,13 @@ public class TonePlayer {
         }).start();
     }
     public void generateFrequencyModulatedSineWave() {
-        double modulationPeriod = 0.1; 
-        double modulationFactor = 0.1;
         
         new Thread(new Runnable() {
             @Override
             public void run() {
+                double modulationPeriod = 0.1;
+                double modulationFactor = 0.1;
+
                 double freqModulated = freq;
                 samples = ShortBuffer.allocate(numSamples);
                 for (int i=0; i < numSamples; i++) {
@@ -69,8 +70,8 @@ public class TonePlayer {
                     
                     freqModulated = (double) freq + modulo * modulationFactor;
                         
-                    double tmp = Math.sin(2 * Math.PI * i * freqModulated / sampleRate); // Frequency Modulated Sine wave
-                    short sample = (short) (tmp * Short.MAX_VALUE);
+                    double temp = Math.sin(2 * Math.PI * i * freqModulated / sampleRate); // Frequency Modulated Sine wave
+                    short sample = (short) (temp * Short.MAX_VALUE);
                     samples.put(sample);
                 }
             }
