@@ -12,7 +12,7 @@ import static com.example.recordaudio.MainActivity.SaveState.RECORDING;
 public class TonePlayer {
     private static final String LOG_TAG = "AudioRecordTest";
 
-    private static final int freq = 20000;
+    private static final int freq = 10000;
 
     private static final int sampleRate = 44100;
 
@@ -60,22 +60,22 @@ public class TonePlayer {
             @Override
             public void run() {
                 double modulationPeriod = 0.1;
-                double modulationFactor = 0.1;
+                double modulationFactor = 0.01;
 
                 double freqModulated = freq;
                 samples = ShortBuffer.allocate(numSamples);
                 for (int i=0; i < numSamples; i++) {
-                    double tmp = (double) numSamples / sampleRate / modulationPeriod;
+                    double tmp = (double) i / sampleRate / modulationPeriod;
                     double modulo = 2* (tmp - Math.floor(tmp) - 0.5);
                     
-                    freqModulated = (double) freq + modulo * modulationFactor;
-                        
+                    freqModulated = (double) freq + modulo*modulationFactor*freq;
+                    Log.d("FREQ MODULATED ", freqModulated + "");
                     double temp = Math.sin(2 * Math.PI * i * freqModulated / sampleRate); // Frequency Modulated Sine wave
                     short sample = (short) (temp * Short.MAX_VALUE);
                     samples.put(sample);
                 }
             }
-        }
+        }).start();
     }
 
     public void start() {
