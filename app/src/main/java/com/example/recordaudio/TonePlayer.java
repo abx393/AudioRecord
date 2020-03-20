@@ -65,7 +65,7 @@ public class TonePlayer {
                 samples = ShortBuffer.allocate(numSamples);
                 for (int i=0; i < numSamples; i++) {
                     double tmp = (double) numSamples / sampleRate / modulationPeriod;
-                    double modulo = tmp - Math.floor(tmp) - 0.5;
+                    double modulo = 2* (tmp - Math.floor(tmp) - 0.5);
                     
                     freqModulated = (double) freq + modulo * modulationFactor;
                         
