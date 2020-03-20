@@ -26,7 +26,7 @@ public class TonePlayer {
     private AudioTrack audioTrack;
 
     public TonePlayer() {
-        generateSineWave();
+        generateFrequencyModulatedSineWave();
 
         // audio playing interface
         bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
