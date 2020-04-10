@@ -66,11 +66,9 @@ public class TonePlayer {
                 samples = ShortBuffer.allocate(numSamples);
 
                 for (int i=0; i < numSamples; i+=500) {
-                    double tmp = (double) i / sampleRate / modulationPeriod;
-                    double modulo = 1 - 2*Math.abs(tmp - Math.floor(tmp)-0.5);
+                    double periodsElapsed = (double) i / sampleRate / modulationPeriod;
+                    double modulo = periodsElapsed - Math.floor(periodsElapsed);
 
-                    //if (modulo>0) freqModulated = 11000;
-                    //else freqModulated = 9000;
                     freqModulated = (double) freq + modulo*freqDeviation;
 
                     for (int j=0; j<500; j++){
@@ -79,7 +77,6 @@ public class TonePlayer {
                         samples.put(sample);
                     }
                     Log.d("FREQ MODULATED ", freqModulated + "");
-
                 }
             }
         }).start();
