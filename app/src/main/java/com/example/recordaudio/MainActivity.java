@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private void startRecording() {
         audioBuffer = new byte[numSamples*2];
         mShouldContinue = true;
-        tonePlayer.start(); //starts audio playing thread
+        tonePlayer.startWav(); //starts audio playing thread
         setCurrentSaveState(RECORDING);
         new Thread(new Runnable() {
             @Override
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void stopRecording() {
         mShouldContinue = false;
-        tonePlayer.stop();
+        tonePlayer.stopWav();
     }
 
     private void saveRecording()  {
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
 
-        tonePlayer = new TonePlayer();
+        tonePlayer = new TonePlayer(this, "test.wav");
         setCurrentSaveState(NONE_OR_SAVED);
     }
 
