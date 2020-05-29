@@ -31,6 +31,8 @@ public class TonePlayer {
 
     private static ShortBuffer samples = ShortBuffer.allocate(numSamples);
 
+    private static String fileName = "";
+
     private static WavFile wav = null;
 
     private static boolean mShouldContinue = false;
@@ -42,7 +44,8 @@ public class TonePlayer {
     //For playing existing wav file of tone
     public TonePlayer(Context c, String fname) {
         applicationContext = c;
-        loadWav(fname);
+
+        fileName = fname;
 
         bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT); //4232
         //Log.d("BUFFER SIZE", "" +bufferSize);
@@ -89,9 +92,8 @@ public class TonePlayer {
     }
 
 
-    public void loadWav(String fname) {
-        File fhandle = openAsset(fname);
-
+    public void loadWav() {
+        File fhandle = openAsset(fileName);
 
         try {
             wav = WavFile.openWavFile(fhandle);
@@ -101,6 +103,7 @@ public class TonePlayer {
     }
 
     public void startWav() {
+        loadWav();
 
         Log.v(LOG_TAG, "WAVE FILE starting...");
         mShouldContinue = true;
