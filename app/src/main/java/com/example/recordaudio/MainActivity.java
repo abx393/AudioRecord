@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
 
-        tonePlayer = new TonePlayer(this, "dust.wav");
+        tonePlayer = new TonePlayer(this, "chirp.wav");
         setCurrentSaveState(NONE_OR_SAVED);
     }
 
