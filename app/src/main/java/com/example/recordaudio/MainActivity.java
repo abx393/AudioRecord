@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
             //writing audio samples to output file
             String path = "/storage/emulated/0/ExerciseRx/Doppler/";
-            PrintStream ps = new PrintStream(new File(path + timestamp + "_audio.csv"));
+            PrintStream ps = new PrintStream(new File(path + timestamp + "_audio.bin"));
             ps.write(audioBuffer, 0, audioBuffer.length);
             /*for (int i=0; i<audioBuffer.length; i++) {
                 pw.print(audioBuffer[i]);
