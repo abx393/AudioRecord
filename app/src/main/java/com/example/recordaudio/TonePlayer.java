@@ -25,7 +25,7 @@ public class TonePlayer {
 
     private static final int freq = 18000;
 
-    private static final int sampleRate = 44100;
+    private static final int sampleRate = 48000;
 
     private static final int numSamples = sampleRate * 300;
 

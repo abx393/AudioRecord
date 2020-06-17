@@ -44,14 +44,14 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:hint="Data Collector Name" />
+            android:hint="Subject ID"/>
     </com.google.android.material.textfield.TextInputLayout>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:layout_below="@id/name_wrapper"
-        android:text="Exercise:"
+        android:text="Activity:"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="5dp"/>
@@ -123,15 +123,15 @@
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/comments_wrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height = "wrap_content"
         android:layout_below="@id/location_wrapper">
         <EditText
             android:id="@+id/comments"
-            android:layout_width="1000dp"
+            android:layout_width="fill_parent"
             android:layout_height="200dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="false"
+            android:layout_centerVertical="false"
             android:hint="Miscellaneous Comments"/>
     </com.google.android.material.textfield.TextInputLayout>
     <!--<include layout="@layout/content_main2" />-->

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.Manifest;
@@ -12,6 +13,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.AudioRecord;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static final int freq = 20000;
-    private static final int sampleRate = 44100;
+    private static final int sampleRate = 48000;
     private static final int numSamples = sampleRate * 300;
     private static String fileName = null;
     private static int bufferSize = AudioRecord.getMinBufferSize(sampleRate,
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AudioRecord recorder = null;
     private MediaPlayer   player = null;
+
+    private int bytesRead;
 
     private static boolean mShouldContinue=false;
 
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 record.startRecording();
 
                 Log.v(LOG_TAG, "Start recording");
-                int bytesRead = 0;
+                bytesRead = 0;
 
                 while (mShouldContinue) {
                     //Log.d(LOG_TAG, "bytes read: " + bytesRead);
@@ -155,42 +159,52 @@ public class MainActivity extends AppCompatActivity {
         //Retrieve label and metadata from info user recorded in textboxes and drop down menus
         String name = nameText.getText().toString();
         String exercise = exerciseSpinner.getSelectedItem().toString();
+//        String reps = repsText.getText().toString();
         String reps = repsText.getText().toString();
         String phoneLocation = locationSpinner.getSelectedItem().toString();
         String phoneOrientation = orientationSpinner.getSelectedItem().toString();
         String location = locationText.getText().toString();
         String comments = commentsText.getText().toString();
 
+        //Generate output files named {timestamp}_audio.csv
+        Date currentTime = new Date();
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss").format(currentTime);
+        Log.d(LOG_TAG, timestamp);
+
         JSONObject data = new JSONObject();
         try {
-            data.put("name", name);
-            data.put("exercise", exercise);
-            data.put("repetitions", reps);
+            data.put("subject", name);
+            data.put("activity", exercise);
+            data.put("num_reps", Integer.parseInt(TextUtils.isEmpty(reps) ? "0" : reps));
             data.put("phoneLocation", phoneLocation);
             data.put("phoneOrientation", phoneOrientation);
-            data.put("phoneModel", "Google Pixel");
-            data.put("Location", location);
-            data.put("Comments", comments);
+            data.put("device", getDeviceName());
+            data.put("device_type", "phone");
+            data.put("location", location);
+            data.put("comments", comments);
+            data.put("n_samples", bytesRead / 2);
+            data.put("fs", 48000);
+            data.put("chirp_freq", 20);
+            data.put("fmin", 16000);
+            data.put("fmax", 21000);
+            data.put("timestamp", timestamp);
         } catch (JSONException e){
             Log.e(LOG_TAG, "saveRecording(): " + e);
         }
-        //Generate output files named {timestamp}_audio.csv
-        Date currentTime = new Date();
-        String timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(currentTime);
-        Log.d(LOG_TAG, timestamp);
         try {
 
             //writing audio samples to output file
-            String path = "/storage/emulated/0/ExerciseRx/Doppler/";
-            PrintStream ps = new PrintStream(new File(path + timestamp + "_audio.bin"));
-            ps.write(audioBuffer, 0, audioBuffer.length);
+//            String path = "/storage/emulated/0/ExerciseRx/Doppler/";
+            String path = "/storage/self/primary/Android/data/com.example.recordaudio/files/";
+            PrintStream ps = new PrintStream(new File(path + timestamp + ".bin"));
+            ps.write(audioBuffer, 0, bytesRead);
             /*for (int i=0; i<audioBuffer.length; i++) {
                 pw.print(audioBuffer[i]);
             }*/
             ps.flush();
             ps.close();
             //writing label and metadata to notes file
-            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(path + timestamp + "_audioNotes.json"))));
+            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(path + timestamp + ".json"))));
             pw2.write(data.toString());
             Log.d(LOG_TAG, data.toString());
             pw2.close();
@@ -284,18 +298,32 @@ public class MainActivity extends AppCompatActivity {
         //Add the options to the "Exercise" drop down menu
         exerciseSpinner = (Spinner) findViewById(R.id.exerciseSpinner);
         ArrayList<String> exercises = new ArrayList<String>();
-        exercises.add("Arm lift");
-        exercises.add("Bicep curl");
-        exercises.add("Chair sit-to-stand");
-        exercises.add("Torso Twist");
-        exercises.add("Inclined Desk Push up");
-        exercises.add("Seated Opposite Knee-to-elbow");
-        exercises.add("Standing Marches (Knee Lifts)");
-        exercises.add("Seated Arm Punches");
-        exercises.add("Standing Crossover Toe Touches");
-        exercises.add("Talking");
-        exercises.add("Eating/Drinking");
-        exercises.add("No Movement");
+        exercises.add("armlifts");
+        exercises.add("bicep_curls");
+        exercises.add("chair_stands");
+        exercises.add("desk_pushups");
+        exercises.add("eating");
+        exercises.add("forward_punches");
+        exercises.add("jumping_jacks");
+        exercises.add("knee_to_elbows");
+        exercises.add("lunges");
+        exercises.add("marches");
+        exercises.add("no_movement");
+        exercises.add("side_to_sides");
+        exercises.add("talking");
+        exercises.add("windmills");
+//        exercises.add("Arm lift");
+//        exercises.add("Bicep curl");
+//        exercises.add("Chair sit-to-stand");
+//        exercises.add("Torso Twist");
+//        exercises.add("Inclined Desk Push up");
+//        exercises.add("Seated Opposite Knee-to-elbow");
+//        exercises.add("Standing Marches (Knee Lifts)");
+//        exercises.add("Seated Arm Punches");
+//        exercises.add("Standing Crossover Toe Touches");
+//        exercises.add("Talking");
+//        exercises.add("Eating/Drinking");
+//        exercises.add("No Movement");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, exercises);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -321,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientationSpinner.setAdapter(dataAdapter3);
 
-        tonePlayer = new TonePlayer(this, "chirp.wav");
+        tonePlayer = new TonePlayer(this, "chirp_tx.wav");
         setCurrentSaveState(NONE_OR_SAVED);
     }
 
@@ -355,6 +383,40 @@ public class MainActivity extends AppCompatActivity {
         currentSaveState = state;
         runOnUiThread(updateScreen);
     }
+
+    // https://stackoverflow.com/a/27836910
+    /** Returns the consumer friendly device name */
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase.append(c);
+        }
+
+        return phrase.toString();
+    }
+
 }
 
 /* Complex number class*/
