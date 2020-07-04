@@ -27,7 +27,7 @@ public class TonePlayer {
 
     private static final int sampleRate = 48000;
 
-    private static final int numSamples = sampleRate * 300;
+    private static final int numSamples = sampleRate * 60;
 
     private static ShortBuffer samples = ShortBuffer.allocate(numSamples);
 

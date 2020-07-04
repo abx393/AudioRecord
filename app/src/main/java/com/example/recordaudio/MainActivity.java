@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             data.put("comments", comments);
             data.put("n_samples", bytesRead / 2);
             data.put("fs", 48000);
-            data.put("chirp_freq", 20);
+            data.put("chirp_freq", 40);
             data.put("fmin", 16000);
             data.put("fmax", 21000);
             data.put("timestamp", timestamp);
