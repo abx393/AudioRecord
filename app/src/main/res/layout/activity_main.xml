@@ -106,7 +106,7 @@
         />
     <Button
         android:id="@+id/discardButton"
-        android:layout_width="220px"
+        android:layout_width="260px"
         android:layout_height="120px"
         android:text="Discard"
         android:layout_below="@id/comments_wrapper"
