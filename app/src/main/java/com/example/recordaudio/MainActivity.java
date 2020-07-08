@@ -13,7 +13,9 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.AudioRecord;
 import android.os.Environment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -83,15 +85,18 @@ public class MainActivity extends AppCompatActivity {
     private static EditText nameText;
     private static Spinner exerciseSpinner;
     private static EditText repsText;
-    private static Spinner locationSpinner;
-    private static Spinner orientationSpinner;
+    //private static Spinner locationSpinner;
+    //private static Spinner orientationSpinner;
     private static EditText locationText;
     private static EditText commentsText;
+
+    private static boolean dataEntered = false;
 
     private RelativeLayout layoutRoot;
     private Button recordButton;
     private Button stopButton;
     private Button saveButton;
+    private Button discardButton;
 
     private SaveState currentSaveState = NONE_OR_SAVED;
     private TonePlayer tonePlayer;
@@ -161,8 +166,9 @@ public class MainActivity extends AppCompatActivity {
         String exercise = exerciseSpinner.getSelectedItem().toString();
 //        String reps = repsText.getText().toString();
         String reps = repsText.getText().toString();
-        String phoneLocation = locationSpinner.getSelectedItem().toString();
-        String phoneOrientation = orientationSpinner.getSelectedItem().toString();
+        repsText.setText("");
+        //String phoneLocation = locationSpinner.getSelectedItem().toString();
+        //String phoneOrientation = orientationSpinner.getSelectedItem().toString();
         String location = locationText.getText().toString();
         String comments = commentsText.getText().toString();
 
@@ -176,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
             data.put("subject", name);
             data.put("activity", exercise);
             data.put("num_reps", Integer.parseInt(TextUtils.isEmpty(reps) ? "0" : reps));
-            data.put("phoneLocation", phoneLocation);
-            data.put("phoneOrientation", phoneOrientation);
+            //data.put("phoneLocation", phoneLocation);
+            //data.put("phoneOrientation", phoneOrientation);
             data.put("device", getDeviceName());
             data.put("device_type", "phone");
             data.put("location", location);
@@ -267,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         recordButton = (Button) findViewById(R.id.recordButton);
         stopButton = (Button) findViewById(R.id.stopButton);
         saveButton = (Button) findViewById(R.id.saveButton);
+        discardButton = (Button) findViewById(R.id.discardButton);
 
         //Setting callback methods for button click events
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -289,9 +296,66 @@ public class MainActivity extends AppCompatActivity {
                 setCurrentSaveState(NONE_OR_SAVED);
             }
         });
+        discardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repsText.setText("");
+                locationText.setText("");
+                commentsText.setText("");
+                setCurrentSaveState(NONE_OR_SAVED);
+            }
+        });
+
 
         nameText = findViewById(R.id.name);
+
+
+        TextWatcher nameTextWatcher = new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (s.length()==0) {
+                    recordButton.setEnabled(false);
+                } else {
+                    if (dataEntered) {
+                        recordButton.setEnabled(true);
+                    } else {
+                        dataEntered = true;
+                    }
+                }
+
+            }
+        };
+
+        nameText.addTextChangedListener(nameTextWatcher);
+
         repsText = findViewById(R.id.reps);
+        TextWatcher repsTextWatcher = new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (s.length()==0) {
+                    recordButton.setEnabled(false);
+                } else {
+                    if (dataEntered) {
+                        recordButton.setEnabled(true);
+                    } else {
+                        dataEntered = true;
+                    }
+                }
+            }
+        };
+        repsText.addTextChangedListener(repsTextWatcher);
+
+
         locationText = findViewById(R.id.location);
         commentsText = findViewById(R.id.comments);
 
@@ -330,27 +394,29 @@ public class MainActivity extends AppCompatActivity {
         exerciseSpinner.setAdapter(dataAdapter);
 
         //Add options to the "Phone Location" drop down menu
-        locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
-        ArrayList<String> locations = new ArrayList<String>();
-        locations.add("Table");
-        locations.add("Floor");
+        //locationSpinner = (Spinner) findViewById(R.id.locationSpinner);
+        //ArrayList<String> locations = new ArrayList<String>();
+        //locations.add("Table");
+        //locations.add("Floor");
 
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locations);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        locationSpinner.setAdapter(dataAdapter2);
+        //ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locations);
+        //dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //locationSpinner.setAdapter(dataAdapter2);
 
         //Add options to the "Phone Orientation" drop down menu
-        orientationSpinner = (Spinner) findViewById(R.id.orientationSpinner);
-        ArrayList<String> orientations = new ArrayList<String>();
-        orientations.add("Flat");
-        orientations.add("Upright");
+        //orientationSpinner = (Spinner) findViewById(R.id.orientationSpinner);
+        //ArrayList<String> orientations = new ArrayList<String>();
+        //orientations.add("Flat");
+        //orientations.add("Upright");
 
-        ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orientations);
-        dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        orientationSpinner.setAdapter(dataAdapter3);
+        //ArrayAdapter<String> dataAdapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orientations);
+        //dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //orientationSpinner.setAdapter(dataAdapter3);
 
         tonePlayer = new TonePlayer(this, "chirp_tx.wav");
         setCurrentSaveState(NONE_OR_SAVED);
+
+        //runOnUiThread(updateScreen);
     }
 
     private Runnable updateScreen = new Runnable() {
@@ -365,15 +431,22 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case SAVEABLE:
                     layoutRoot.setBackgroundColor(Color.GREEN);
-                    recordButton.setEnabled(true);
+                    recordButton.setEnabled(false);
                     stopButton.setEnabled(false);
                     saveButton.setEnabled(true);
+                    discardButton.setEnabled(true);
                     break;
                 case NONE_OR_SAVED:
                     layoutRoot.setBackgroundColor(Color.WHITE);
-                    recordButton.setEnabled(true);
+                    /*if (nameText.getText().toString().length()>0 && repsText.getText().toString().length()>0) {
+                        recordButton.setEnabled(true);
+                    } else {
+                        recordButton.setEnabled(false);
+                    }*/
+                    recordButton.setEnabled(false);
                     stopButton.setEnabled(false);
                     saveButton.setEnabled(false);
+                    discardButton.setEnabled(false);
                     break;
             }
         }

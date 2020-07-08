@@ -26,13 +26,7 @@
         android:text="Stop"
         android:layout_toRightOf="@id/recordButton"
         />
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="220px"
-        android:layout_height="120px"
-        android:text="Save"
-        android:layout_toRightOf="@id/stopButton"
-        />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_wrapper"
         android:layout_width="wrap_content"
@@ -76,43 +70,12 @@
             android:hint="Number of repetitions"
             android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:layout_below="@id/reps_wrapper"
-        android:text="Phone Location: "
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginBottom="25dp"/>
-    <Spinner
-        android:id="@+id/locationSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/reps_wrapper"
-        android:layout_marginTop="50dp"
-        />
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:layout_below="@id/locationSpinner"
-        android:text="Phone Orientation: "
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginBottom="25dp"/>
-    <Spinner
-        android:id="@+id/orientationSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/locationSpinner"
-        android:layout_marginTop="50dp"
-        />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/location_wrapper"
         android:layout_width="wrap_content"
         android:layout_height = "wrap_content"
-        android:layout_below="@id/orientationSpinner">
+        android:layout_below="@id/reps_wrapper">
         <EditText
             android:id="@+id/location"
             android:layout_width="600dp"
@@ -134,5 +97,20 @@
             android:layout_centerVertical="false"
             android:hint="Miscellaneous Comments"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="220px"
+        android:layout_height="120px"
+        android:text="Save"
+        android:layout_below="@id/comments_wrapper"
+        />
+    <Button
+        android:id="@+id/discardButton"
+        android:layout_width="220px"
+        android:layout_height="120px"
+        android:text="Discard"
+        android:layout_below="@id/comments_wrapper"
+        android:layout_toRightOf="@+id/saveButton"
+        />
     <!--<include layout="@layout/content_main2" />-->
 </RelativeLayout>
