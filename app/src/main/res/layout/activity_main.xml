@@ -1,116 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">-->
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:id="@+id/layout_root">
-    <Button
-        android:id="@+id/recordButton"
-        android:layout_width="220px"
-        android:layout_height="120px"
-        android:text="Start"
-    />
-    <Button
-        android:id="@+id/stopButton"
-        android:layout_width="220px"
-        android:layout_height="120px"
-        android:text="Stop"
-        android:layout_toRightOf="@id/recordButton"
-        />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_below="@id/recordButton">
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="600dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:hint="Subject ID"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <TextView
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:layout_below="@id/name_wrapper"
-        android:text="Activity:"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginBottom="5dp"/>
-    <Spinner
-        android:id="@+id/exerciseSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_wrapper"
         android:layout_marginTop="50dp"
-        />
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/reps_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_below="@id/exerciseSpinner">
-        <EditText
-            android:id="@+id/reps"
-            android:layout_width="600dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/activityLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:hint="Number of repetitions"
-            android:inputType="number"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/location_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_below="@id/reps_wrapper">
-        <EditText
-            android:id="@+id/location"
-            android:layout_width="600dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:hint="Location"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/comments_wrapper"
-        android:layout_width="fill_parent"
-        android:layout_height = "wrap_content"
-        android:layout_below="@id/location_wrapper">
-        <EditText
-            android:id="@+id/comments"
+            android:text="Activity:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+        <Spinner
+            android:id="@+id/exerciseSpinner"
             android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:layout_centerHorizontal="false"
-            android:layout_centerVertical="false"
-            android:hint="Miscellaneous Comments"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="220px"
-        android:layout_height="120px"
-        android:text="Save"
-        android:layout_below="@id/comments_wrapper"
-        />
-    <Button
-        android:id="@+id/discardButton"
-        android:layout_width="260px"
-        android:layout_height="120px"
-        android:text="Discard"
-        android:layout_below="@id/comments_wrapper"
-        android:layout_toRightOf="@+id/saveButton"
-        />
-    <!--<include layout="@layout/content_main2" />-->
-</RelativeLayout>
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/repsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repetitions:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+        <EditText
+            android:id="@+id/repsEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter number..."
+            android:inputType="number"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/recordButton"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:textColor="@drawable/button_text_color"
+            android:background="@drawable/green_button"
+            android:padding="10dp"
+            android:textSize="30sp"
+            />
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:textColor="@drawable/button_text_color"
+            android:background="@drawable/red_button"
+            android:padding="10dp"
+            android:textSize="30sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:gravity="center">
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="@drawable/button_text_color"
+            android:background="@drawable/green_button"
+            android:padding="10dp"
+            android:textSize="30sp"
+            />
+        <Button
+            android:id="@+id/discardButton"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Discard"
+            android:textColor="@drawable/button_text_color"
+            android:background="@drawable/red_button"
+            android:padding="10dp"
+            android:textSize="30sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:gravity="center">
+        <Button
+            android:id="@+id/syncButton"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="SYNC"
+            android:textColor="@drawable/button_text_color"
+            android:background="@drawable/blue_button"
+            android:padding="10dp"
+            android:textSize="30sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
