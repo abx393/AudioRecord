@@ -121,7 +121,7 @@
             android:layout_margin="10dp"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="SYNC"
+            android:text="Upload"
             android:textColor="@drawable/button_text_color"
             android:background="@drawable/blue_button"
             android:padding="10dp"

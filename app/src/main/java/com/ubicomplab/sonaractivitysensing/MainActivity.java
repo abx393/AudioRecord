@@ -621,7 +621,6 @@ public class MainActivity extends AppCompatActivity {
                 if (responseString.trim().equals("valid")) {
                     // login successful!
                     toastPopup("Login successful!");
-                    // TODO store login information in app preferences???
                 } else if (responseString.trim().equals("invalid")){
                     loginPopup("Login Error", "Invalid subject ID. Please try again.");
                 } else {
