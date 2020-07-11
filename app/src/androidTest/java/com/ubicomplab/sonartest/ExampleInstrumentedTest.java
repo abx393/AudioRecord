@@ -1,4 +1,4 @@
-package com.ubicomplab.sonaractivitysensing;
+package com.ubicomplab.sonartest;
 
 import android.content.Context;
 

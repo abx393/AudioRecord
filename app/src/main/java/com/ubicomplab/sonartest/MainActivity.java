@@ -1,4 +1,4 @@
-package com.ubicomplab.sonaractivitysensing;
+package com.ubicomplab.sonartest;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,7 +6,10 @@ import androidx.core.app.ActivityCompat;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -52,14 +55,14 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import static com.ubicomplab.sonaractivitysensing.MainActivity.SaveState.READY;
-import static com.ubicomplab.sonaractivitysensing.MainActivity.SaveState.UNREADY;
-import static com.ubicomplab.sonaractivitysensing.MainActivity.SaveState.RECORDING;
-import static com.ubicomplab.sonaractivitysensing.MainActivity.SaveState.SAVEABLE;
+import static com.ubicomplab.sonartest.MainActivity.SaveState.READY;
+import static com.ubicomplab.sonartest.MainActivity.SaveState.UNREADY;
+import static com.ubicomplab.sonartest.MainActivity.SaveState.RECORDING;
+import static com.ubicomplab.sonartest.MainActivity.SaveState.SAVEABLE;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LOCAL_PATH = "/storage/self/primary/Android/data/com.example.recordaudio/files/";
+    private static final String LOCAL_PATH = "/storage/self/primary/Android/data/com.ubicomplab.sonartest/files/";
 
     private static final String SERVER_PASSWORD = "aloeunrehearsedplunderrecovereddelimination";
 
@@ -113,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private Button saveButton;
     private Button discardButton;
     private Button syncButton;
+    private Button privacyButton;
 
     private SaveState currentSaveState = UNREADY;
     private TonePlayer tonePlayer;
@@ -188,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.saveButton);
         discardButton = findViewById(R.id.discardButton);
         syncButton = findViewById(R.id.syncButton);
+        privacyButton = findViewById(R.id.privacyButton);
 
         //Setting callback methods for button click events
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         discardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setCurrentSaveState(UNREADY);
+                setCurrentSaveState(READY);
             }
         });
 
@@ -221,6 +226,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 syncFiles();
+            }
+        });
+
+        privacyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPrivacyPolicy();
             }
         });
 
@@ -325,6 +337,11 @@ public class MainActivity extends AppCompatActivity {
         mShouldContinue = true;
         tonePlayer.startWav(); //starts audio playing thread
         setCurrentSaveState(RECORDING);
+
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        assert audioManager != null;
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -620,7 +637,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (responseString.trim().equals("valid")) {
                     // login successful!
-                    toastPopup("Login successful!");
+//                    toastPopup("Login successful!");
                 } else if (responseString.trim().equals("invalid")){
                     loginPopup("Login Error", "Invalid subject ID. Please try again.");
                 } else {
@@ -645,5 +662,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showPrivacyPolicy() {
+        Intent intent = new Intent(getApplicationContext(),
+                PrivacyPolicyActivity.class);
+        startActivity(intent);
+    }
 
 }

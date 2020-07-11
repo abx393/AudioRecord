@@ -1,4 +1,4 @@
-package com.ubicomplab.sonaractivitysensing;
+package com.ubicomplab.sonartest;
 
 import java.io.File;
 import java.io.FileInputStream;

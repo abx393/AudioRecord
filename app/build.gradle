@@ -1,10 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        upload {
+            storeFile file('/Users/psr/keystores/upload-keystore.jks')
+            storePassword 'MBsV$ItU'
+            keyAlias = 'upload'
+            keyPassword 'xMOh68XN'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.example.recordaudio"
+        applicationId "com.ubicomplab.sonartest"
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
@@ -15,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.upload
         }
     }
 }
@@ -23,13 +32,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.android.support:appcompat-v7:+'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:1.3.0"
 
     implementation 'com.loopj.android:android-async-http:1.4.9'
 }
